@@ -6,7 +6,7 @@ const USE_SUPABASE =
   !!process.env.NEXT_PUBLIC_SUPABASE_URL && !!process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY;
 
 export async function middleware(request: NextRequest) {
-  // Without Supabase (local dev) — admin is open.
+  // Without Supabase (local dev) or screenshot mode — admin is open.
   if (!USE_SUPABASE) return NextResponse.next();
 
   const response = NextResponse.next({ request });

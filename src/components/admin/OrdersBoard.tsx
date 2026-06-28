@@ -2,17 +2,11 @@
 
 import { useCallback, useEffect, useRef, useState } from "react";
 import { createClient } from "@/lib/supabase/client";
-import {
-  CheckCircle2,
-  Clock,
-  Loader2,
-  MessageCircle,
-  RefreshCw,
-  XCircle,
-} from "lucide-react";
+import { CheckCircle2, Clock, MessageCircle, RefreshCw, XCircle } from "lucide-react";
 import { cn, formatINR, orderTypeLabel } from "@/lib/utils";
 import { buildStatusMessage, waLink } from "@/lib/whatsapp";
 import { CompletedOrdersTable } from "./CompletedOrdersTable";
+import { Spinner } from "@/components/ui/Spinner";
 import type { Order, OrderStatus, RestaurantSettings } from "@/lib/types";
 
 /* Status groups shown on the board */
@@ -175,7 +169,7 @@ export function OrdersBoard({ settings }: { settings: RestaurantSettings }) {
   if (loading) {
     return (
       <div className="flex min-h-[40vh] items-center justify-center gap-2 text-muted">
-        <Loader2 className="h-5 w-5 animate-spin" /> Loading orders…
+        <Spinner size={28} /> Loading orders…
       </div>
     );
   }
@@ -345,7 +339,7 @@ function OrderCard({
               disabled={!!actioning}
               className="btn-ghost btn-sm flex-1"
             >
-              {acting("paid") ? <Loader2 className="h-4 w-4 animate-spin" /> : <CheckCircle2 className="h-4 w-4 text-leaf" />}
+              {acting("paid") ? <Spinner size={16} /> : <CheckCircle2 className="h-4 w-4 text-leaf" />}
               Mark paid
             </button>
           )}
@@ -356,7 +350,7 @@ function OrderCard({
               disabled={!!actioning}
               className="btn-primary btn-sm flex-1"
             >
-              {acting("advance") ? <Loader2 className="h-4 w-4 animate-spin" /> : null}
+              {acting("advance") ? <Spinner size={16} /> : null}
               {nextLabel}
             </button>
           )}

@@ -3,7 +3,8 @@
 import { useEffect, useState } from "react";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
-import { AlertCircle, Bike, Loader2, ShoppingBag, UtensilsCrossed } from "lucide-react";
+import { AlertCircle, Bike, ShoppingBag, UtensilsCrossed } from "lucide-react";
+import { Spinner } from "@/components/ui/Spinner";
 import { DietMark } from "@/components/ui/DietMark";
 import { useCart } from "@/lib/cart-context";
 import { saveOrderCode } from "@/lib/order-history";
@@ -273,7 +274,7 @@ export function CheckoutForm({ settings }: { settings: RestaurantSettings }) {
           >
             {submitting ? (
               <>
-                <Loader2 className="h-4 w-4 animate-spin" /> Placing order…
+                <Spinner size={16} /> Placing order…
               </>
             ) : (
               <>Place order · {formatINR(total)}</>

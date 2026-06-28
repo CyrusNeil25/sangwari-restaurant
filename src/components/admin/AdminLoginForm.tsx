@@ -2,7 +2,8 @@
 
 import { use, useState } from "react";
 import { useRouter } from "next/navigation";
-import { Eye, EyeOff, Loader2 } from "lucide-react";
+import { Eye, EyeOff } from "lucide-react";
+import { Spinner } from "@/components/ui/Spinner";
 import { createClient } from "@/lib/supabase/client";
 
 const inputCls =
@@ -84,7 +85,7 @@ export function AdminLoginForm({ nextParam }: { nextParam: Promise<string | unde
       )}
 
       <button type="submit" disabled={loading} className="btn-primary w-full">
-        {loading ? <Loader2 className="h-4 w-4 animate-spin" /> : null}
+        {loading ? <Spinner size={16} /> : null}
         Sign in
       </button>
 

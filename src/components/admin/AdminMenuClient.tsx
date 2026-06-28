@@ -2,9 +2,8 @@
 
 import { useState } from "react";
 import { AnimatePresence, motion } from "framer-motion";
-import {
-  Edit2, Loader2, Plus, QrCode, Trash2, X, CheckCircle, XCircle
-} from "lucide-react";
+import { Edit2, Plus, QrCode, Trash2, X, CheckCircle, XCircle } from "lucide-react";
+import { Spinner } from "@/components/ui/Spinner";
 import { DietMark } from "@/components/ui/DietMark";
 import { cn, formatINR } from "@/lib/utils";
 import type { Category, MenuItem } from "@/lib/types";
@@ -130,7 +129,7 @@ export function AdminMenuClient({
                 className={cn("chip text-xs", item.isAvailable ? "border-leaf/30 bg-leaf/10 text-leaf" : "border-chili/30 bg-chili/10 text-chili")}
               >
                 {toggling === item.id
-                  ? <Loader2 className="h-3 w-3 animate-spin" />
+                  ? <Spinner size={14} />
                   : item.isAvailable ? <><CheckCircle className="h-3 w-3" /> Available</> : <><XCircle className="h-3 w-3" /> Sold out</>
                 }
               </button>
@@ -143,7 +142,7 @@ export function AdminMenuClient({
                 disabled={deleting === item.id}
                 className="btn-ghost btn-sm p-2 text-chili hover:border-chili/40"
               >
-                {deleting === item.id ? <Loader2 className="h-4 w-4 animate-spin" /> : <Trash2 className="h-4 w-4" />}
+                {deleting === item.id ? <Spinner size={16} /> : <Trash2 className="h-4 w-4" />}
               </button>
             </div>
           </div>
@@ -219,7 +218,7 @@ export function AdminMenuClient({
               <div className="flex gap-3 border-t border-line bg-paper p-4">
                 <button type="button" onClick={() => setEditing(null)} className="btn-ghost flex-1">Cancel</button>
                 <button type="button" onClick={save} disabled={saving} className="btn-primary flex-1">
-                  {saving ? <Loader2 className="h-4 w-4 animate-spin" /> : null}
+                  {saving ? <Spinner size={16} /> : null}
                   Save item
                 </button>
               </div>

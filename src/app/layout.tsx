@@ -3,7 +3,9 @@ import { Fraunces, Plus_Jakarta_Sans } from "next/font/google";
 import "./globals.css";
 import { CartProvider } from "@/lib/cart-context";
 import { CustomerChrome } from "@/components/site/CustomerChrome";
+import { NavigationLoader } from "@/components/site/NavigationLoader";
 import { getSettings } from "@/lib/data";
+import { Analytics } from "@vercel/analytics/next"
 
 const display = Fraunces({
   subsets: ["latin"],
@@ -66,11 +68,21 @@ export default async function RootLayout({
   const settings = await getSettings();
 
   return (
-    <html lang="en" className={`${display.variable} ${sans.variable} h-full`}>
+    <html lang="en" className={`${display.variable} ${sans.variable} h-full`} suppressHydrationWarning>
+      {/* Anti-flash: runs before React hydration to apply the saved theme class */}
+      <head>
+        <script
+          dangerouslySetInnerHTML={{
+            __html: `(function(){var t=localStorage.getItem('sangwari-theme');if(t==='dark'||(!t&&window.matchMedia('(prefers-color-scheme: dark)').matches)){document.documentElement.classList.add('dark');}})();`,
+          }}
+        />
+      </head>
       <body className="min-h-full flex flex-col antialiased">
         <CartProvider>
+          <NavigationLoader />
           <CustomerChrome settings={settings}>
             {children}
+            <Analytics />
           </CustomerChrome>
         </CartProvider>
       </body>

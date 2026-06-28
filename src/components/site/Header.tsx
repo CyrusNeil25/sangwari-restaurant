@@ -4,6 +4,7 @@ import Link from "next/link";
 import { ShoppingBag } from "lucide-react";
 import { Logo } from "./Logo";
 import { OpenStatusPill } from "./OpenStatusPill";
+import { ThemeToggle } from "@/components/ui/ThemeToggle";
 import { useCart } from "@/lib/cart-context";
 import type { RestaurantSettings } from "@/lib/types";
 
@@ -25,20 +26,23 @@ export function Header({ settings }: { settings: RestaurantSettings }) {
           <OpenStatusPill isOpen={settings.isOpen} hours={settings.hours} className="text-xs" />
         </nav>
 
-        <button
-          type="button"
-          onClick={openCart}
-          className="btn-ghost btn-sm relative"
-          aria-label="Open cart"
-        >
-          <ShoppingBag className="h-4 w-4" />
-          <span className="hidden sm:inline">Cart</span>
-          {hydrated && count > 0 && (
-            <span className="absolute -right-1.5 -top-1.5 grid h-5 min-w-5 place-items-center rounded-full bg-terracotta px-1 text-[11px] font-bold text-white">
-              {count}
-            </span>
-          )}
-        </button>
+        <div className="flex items-center gap-2">
+          <ThemeToggle />
+          <button
+            type="button"
+            onClick={openCart}
+            className="btn-ghost btn-sm relative"
+            aria-label="Open cart"
+          >
+            <ShoppingBag className="h-4 w-4" />
+            <span className="hidden sm:inline">Cart</span>
+            {hydrated && count > 0 && (
+              <span className="absolute -right-1.5 -top-1.5 grid h-5 min-w-5 place-items-center rounded-full bg-terracotta px-1 text-[11px] font-bold text-white">
+                {count}
+              </span>
+            )}
+          </button>
+        </div>
       </div>
     </header>
   );

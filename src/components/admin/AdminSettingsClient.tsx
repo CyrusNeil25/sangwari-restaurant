@@ -1,7 +1,8 @@
 "use client";
 
 import { useState } from "react";
-import { CheckCircle2, Loader2, ToggleLeft, ToggleRight } from "lucide-react";
+import { CheckCircle2, ToggleLeft, ToggleRight } from "lucide-react";
+import { Spinner } from "@/components/ui/Spinner";
 import { cn } from "@/lib/utils";
 import type { RestaurantSettings } from "@/lib/types";
 
@@ -86,7 +87,7 @@ export function AdminSettingsClient({ initial }: { initial: RestaurantSettings }
 
       <div className="flex items-center gap-3">
         <button type="button" onClick={save} disabled={saving} className="btn-primary">
-          {saving ? <Loader2 className="h-4 w-4 animate-spin" /> : null}
+          {saving ? <Spinner size={16} /> : null}
           Save settings
         </button>
         {saved && (
