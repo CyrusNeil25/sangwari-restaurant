@@ -8,6 +8,7 @@ import { formatINR } from "@/lib/utils";
 export function PaymentPanel({
   upiUri,
   waUrl,
+  paymentMethod = "upi",
   amount,
   upiId,
   paid,
@@ -17,6 +18,7 @@ export function PaymentPanel({
   amount: number;
   upiId: string;
   paid: boolean;
+  paymentMethod?: "upi" | "cod";
 }) {
   const [qr, setQr] = useState("");
   const [copied, setCopied] = useState(false);
@@ -43,6 +45,40 @@ export function PaymentPanel({
     } catch {
       /* clipboard unavailable */
     }
+  }
+
+  // COD — no QR needed, just confirm and WhatsApp
+  if (paymentMethod === "cod") {
+    return (
+      <div className="card overflow-hidden">
+        <div className="flex items-center gap-4 p-6">
+          <span className="text-5xl">💵</span>
+          <div>
+            <p className="font-display text-xl font-semibold text-ink">Cash on delivery</p>
+            <p className="mt-1 text-sm text-muted">
+              Please keep <span className="font-semibold text-ink">{formatINR(amount)}</span> ready
+              when your order arrives.
+            </p>
+          </div>
+        </div>
+        <div className="border-t border-line bg-cream/60 p-6">
+          <p className="text-sm font-semibold uppercase tracking-wide text-terracotta">
+            Confirm on WhatsApp
+          </p>
+          <p className="mt-1 text-sm text-muted">
+            Let us know you&apos;re expecting the order so we can prepare and dispatch.
+          </p>
+          <a
+            href={waUrl}
+            target="_blank"
+            rel="noopener noreferrer"
+            className="btn mt-3 w-full bg-[#25D366] px-5 py-3.5 text-white shadow-soft hover:brightness-95"
+          >
+            <MessageCircle className="h-5 w-5" /> Send order on WhatsApp
+          </a>
+        </div>
+      </div>
+    );
   }
 
   if (paid) {

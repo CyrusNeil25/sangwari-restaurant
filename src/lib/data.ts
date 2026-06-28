@@ -180,8 +180,13 @@ async function _mockCreateOrder(input: CreateOrderInput): Promise<Order> {
   const tax = Math.round((subtotal * s.taxPercent) / 100);
   const total = subtotal + deliveryFee + tax;
 
-  let code = generateOrderCode();
-  while (orderStore.has(code)) code = generateOrderCode();
+  // Auto-scale: after 5 misses at current length, add a character.
+  let len = 4, attempts = 0;
+  let code = generateOrderCode(len);
+  while (orderStore.has(code)) {
+    if (++attempts % 5 === 0) len++;
+    code = generateOrderCode(len);
+  }
 
   const order: Order = {
     code,
@@ -196,7 +201,8 @@ async function _mockCreateOrder(input: CreateOrderInput): Promise<Order> {
     tax,
     total,
     status: "PENDING",
-    paymentStatus: "UNPAID",
+    paymentStatus: input.type === "delivery" && input.paymentMethod === "cod" ? "PAID" : "UNPAID",
+    paymentMethod: input.paymentMethod ?? "upi",
     notes: input.notes,
     createdAt: new Date().toISOString(),
   };

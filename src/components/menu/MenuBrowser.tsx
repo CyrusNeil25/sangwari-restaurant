@@ -29,6 +29,7 @@ export function MenuBrowser({
           category: c,
           items: items.filter((i) => {
             if (i.categoryId !== c.id) return false;
+            if (!i.isAvailable) return false;          // hide unavailable entirely
             if (diet === "veg" && !i.isVeg) return false;
             if (diet === "nonveg" && i.isVeg) return false;
             if (q) {

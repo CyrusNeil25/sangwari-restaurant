@@ -1,6 +1,8 @@
 import { NextResponse } from "next/server";
 import { createOrder } from "@/lib/data";
-import type { OrderType } from "@/lib/types";
+import type { OrderType, PaymentMethod } from "@/lib/types";
+
+const PAYMENT_METHODS: PaymentMethod[] = ["upi", "cod"];
 
 const ORDER_TYPES: OrderType[] = ["delivery", "takeaway", "dinein"];
 
@@ -56,6 +58,9 @@ export async function POST(req: Request) {
   }
 
   try {
+    const pm = b.paymentMethod as PaymentMethod;
+    const paymentMethod = type === "delivery" && PAYMENT_METHODS.includes(pm) ? pm : "upi";
+
     const order = await createOrder({
       type,
       customerName: name,
@@ -63,6 +68,7 @@ export async function POST(req: Request) {
       address: type === "delivery" ? str(b.address, 300) : undefined,
       tableNumber: type === "dinein" ? str(b.tableNumber, 10) : undefined,
       notes: str(b.notes, 300) || undefined,
+      paymentMethod,
       items,
     });
     return NextResponse.json({ code: order.code, total: order.total });

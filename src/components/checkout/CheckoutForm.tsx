@@ -8,7 +8,7 @@ import { DietMark } from "@/components/ui/DietMark";
 import { useCart } from "@/lib/cart-context";
 import { saveOrderCode } from "@/lib/order-history";
 import { cn, formatINR } from "@/lib/utils";
-import type { OrderType, RestaurantSettings } from "@/lib/types";
+import type { OrderType, PaymentMethod, RestaurantSettings } from "@/lib/types";
 
 const TYPES: { key: OrderType; label: string; icon: typeof Bike }[] = [
   { key: "delivery", label: "Delivery", icon: Bike },
@@ -24,6 +24,7 @@ export function CheckoutForm({ settings }: { settings: RestaurantSettings }) {
   const { lines, subtotal, hydrated, tableNumber, clear } = useCart();
 
   const [type, setType] = useState<OrderType>("delivery");
+  const [paymentMethod, setPaymentMethod] = useState<PaymentMethod>("upi");
   const [name, setName] = useState("");
   const [phone, setPhone] = useState("");
   const [address, setAddress] = useState("");
@@ -67,6 +68,7 @@ export function CheckoutForm({ settings }: { settings: RestaurantSettings }) {
           address,
           tableNumber: table,
           notes,
+          paymentMethod: type === "delivery" ? paymentMethod : "upi",
           items: lines.map((l) => ({ itemId: l.item.id, qty: l.qty, note: l.note })),
         }),
       });
@@ -127,6 +129,39 @@ export function CheckoutForm({ settings }: { settings: RestaurantSettings }) {
             })}
           </div>
         </section>
+
+        {/* Payment method — delivery only */}
+        {type === "delivery" && (
+          <section>
+            <h2 className="mb-2 text-sm font-semibold uppercase tracking-wide text-muted">
+              How would you like to pay?
+            </h2>
+            <div className="grid grid-cols-2 gap-2">
+              {([
+                { key: "upi", label: "UPI / QR", sub: "Scan & pay instantly", emoji: "📲" },
+                { key: "cod", label: "Cash on delivery", sub: "Pay when it arrives", emoji: "💵" },
+              ] as const).map((p) => (
+                <button
+                  key={p.key}
+                  type="button"
+                  onClick={() => setPaymentMethod(p.key)}
+                  className={cn(
+                    "flex items-center gap-3 rounded-2xl border p-4 text-left text-sm transition-colors",
+                    paymentMethod === p.key
+                      ? "border-terracotta bg-terracotta-50 text-terracotta"
+                      : "border-line bg-paper text-muted hover:border-terracotta/40",
+                  )}
+                >
+                  <span className="text-2xl">{p.emoji}</span>
+                  <div>
+                    <p className="font-semibold text-ink">{p.label}</p>
+                    <p className="text-xs text-muted">{p.sub}</p>
+                  </div>
+                </button>
+              ))}
+            </div>
+          </section>
+        )}
 
         <section className="space-y-3">
           <div className="grid gap-3 sm:grid-cols-2">

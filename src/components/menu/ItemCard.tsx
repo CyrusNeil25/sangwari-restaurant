@@ -20,7 +20,6 @@ export function ItemCard({
 }) {
   const { lines, add, setQty } = useCart();
   const qty = lines.find((l) => l.item.id === item.id)?.qty ?? 0;
-  const soldOut = !item.isAvailable;
   const [popping, setPopping] = useState(false);
 
   function handleAdd() {
@@ -31,10 +30,7 @@ export function ItemCard({
 
   return (
     <article
-      className={cn(
-        "card flex gap-4 p-3 transition-shadow",
-        soldOut ? "opacity-60" : "hover:shadow-card",
-      )}
+      className="card flex gap-4 p-3 transition-shadow hover:shadow-card"
     >
       {/* Text */}
       <div className="flex min-w-0 flex-1 flex-col">
@@ -72,19 +68,10 @@ export function ItemCard({
           aria-label={`View ${item.name}`}
         >
           <span className="text-4xl sm:text-5xl">{item.emoji ?? "🍽️"}</span>
-          {soldOut && (
-            <span className="absolute inset-0 grid place-items-center bg-ink/45 text-xs font-bold uppercase tracking-wide text-white">
-              Sold out
-            </span>
-          )}
         </button>
 
         <div className="w-24 sm:w-28">
-          {soldOut ? (
-            <div className="rounded-full border border-line py-2 text-center text-xs font-medium text-muted">
-              Unavailable
-            </div>
-          ) : qty === 0 ? (
+          {qty === 0 ? (
             <motion.button
               type="button"
               onClick={handleAdd}

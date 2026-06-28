@@ -93,6 +93,7 @@ export default async function OrderPage({
           amount={order.total}
           upiId={settings.upiId}
           paid={paid}
+          paymentMethod={order.paymentMethod}
         />
       )}
 

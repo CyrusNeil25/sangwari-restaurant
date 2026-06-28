@@ -87,6 +87,7 @@ function rowToOrder(
     total: r.total as number,
     status: r.status as OrderStatus,
     paymentStatus: r.payment_status as PaymentStatus,
+    paymentMethod: (r.payment_method as string ?? "upi") as Order["paymentMethod"],
     notes: r.notes as string | undefined,
     createdAt: r.created_at as string,
   };
@@ -247,13 +248,18 @@ export async function createOrder(input: CreateOrderInput): Promise<Order> {
   const tax = Math.round((subtotal * settings.taxPercent) / 100);
   const total = subtotal + deliveryFee + tax;
 
-  // Unique code with collision retry
-  let code = generateOrderCode();
-  for (let i = 0; i < 5; i++) {
+  // Auto-scale: after 5 misses at current length, add a character.
+  let len = 4, attempts = 0;
+  let code = generateOrderCode(len);
+  while (true) {
     const { data } = await supabase.from("orders").select("code").eq("code", code).maybeSingle();
     if (!data) break;
-    code = generateOrderCode();
+    if (++attempts % 5 === 0) len++;
+    code = generateOrderCode(len);
   }
+
+  const paymentMethod = input.paymentMethod ?? "upi";
+  const isCod = input.type === "delivery" && paymentMethod === "cod";
 
   const { error: orderErr } = await supabase.from("orders").insert({
     code,
@@ -266,6 +272,8 @@ export async function createOrder(input: CreateOrderInput): Promise<Order> {
     delivery_fee: deliveryFee,
     tax,
     total,
+    payment_method: paymentMethod,
+    payment_status: isCod ? "PAID" : "UNPAID",
     notes: input.notes ?? null,
   });
   if (orderErr) throw new Error("Failed to create order.");

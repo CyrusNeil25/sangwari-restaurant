@@ -15,6 +15,7 @@ export interface OrderMessageInput {
   tax: number;
   total: number;
   notes?: string;
+  paymentMethod?: "upi" | "cod";
 }
 
 /** Readable WhatsApp message (uses *bold* markup that WhatsApp renders). */
@@ -38,7 +39,11 @@ export function buildOrderMessage(o: OrderMessageInput): string {
   if (o.type === "dinein" && o.table) L.push(`*Table:* ${o.table}`);
   if (o.notes) L.push(`*Note:* ${o.notes}`);
   L.push("");
-  L.push(`I'll pay ${formatINR(o.total)} via UPI (${o.settings.upiId}). Please confirm. 🙏`);
+  if (o.paymentMethod === "cod") {
+    L.push(`*Payment:* Cash on delivery — I'll pay ${formatINR(o.total)} in cash. Please confirm. 🙏`);
+  } else {
+    L.push(`I'll pay ${formatINR(o.total)} via UPI (${o.settings.upiId}). Please confirm. 🙏`);
+  }
   return L.join("\n");
 }
 

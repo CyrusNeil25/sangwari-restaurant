@@ -4,7 +4,6 @@ import { useCallback, useEffect, useRef, useState } from "react";
 import { createClient } from "@/lib/supabase/client";
 import {
   CheckCircle2,
-  ChevronDown,
   Clock,
   Loader2,
   MessageCircle,
@@ -13,6 +12,7 @@ import {
 } from "lucide-react";
 import { cn, formatINR, orderTypeLabel } from "@/lib/utils";
 import { buildStatusMessage, waLink } from "@/lib/whatsapp";
+import { CompletedOrdersTable } from "./CompletedOrdersTable";
 import type { Order, OrderStatus, RestaurantSettings } from "@/lib/types";
 
 /* Status groups shown on the board */
@@ -244,25 +244,7 @@ export function OrdersBoard({ settings }: { settings: RestaurantSettings }) {
       )}
 
       {/* Done */}
-      {done.length > 0 && (
-        <CollapsibleSection title={`Completed / Cancelled (${done.length})`}>
-          <div className="grid gap-3 sm:grid-cols-2 xl:grid-cols-3">
-            {done.map((o) => (
-              <OrderCard
-                key={o.code}
-                order={o}
-                actioning={actioning}
-                onAdvance={advance}
-                onMarkPaid={markPaid}
-                onCancel={cancel}
-                onWa={waCustomer}
-                isPickup={o.type !== "delivery"}
-                dim
-              />
-            ))}
-          </div>
-        </CollapsibleSection>
-      )}
+      {done.length > 0 && <CompletedOrdersTable orders={done} />}
 
       {orders.length === 0 && (
         <div className="flex min-h-[35vh] flex-col items-center justify-center gap-3 text-center text-muted">
@@ -338,7 +320,19 @@ function OrderCard({
           <p className="text-xs text-muted">Table {order.tableNumber}</p>
         )}
         {order.notes && <p className="mt-0.5 text-xs text-bronze">Note: {order.notes}</p>}
-        <p className="mt-1 font-semibold text-ink">{formatINR(order.total)}</p>
+        <div className="mt-1 flex items-center gap-2">
+          <span className="font-semibold text-ink">{formatINR(order.total)}</span>
+          {order.type === "delivery" && (
+            <span className={cn(
+              "rounded-full px-2 py-0.5 text-[10px] font-bold uppercase tracking-wide",
+              order.paymentMethod === "cod"
+                ? "bg-saffron-50 text-bronze"
+                : "bg-terracotta-50 text-terracotta",
+            )}>
+              {order.paymentMethod === "cod" ? "💵 COD" : "📲 UPI"}
+            </span>
+          )}
+        </div>
       </div>
 
       {/* Actions */}
@@ -385,25 +379,3 @@ function OrderCard({
   );
 }
 
-function CollapsibleSection({
-  title,
-  children,
-}: {
-  title: string;
-  children: React.ReactNode;
-}) {
-  const [open, setOpen] = useState(false);
-  return (
-    <section>
-      <button
-        type="button"
-        onClick={() => setOpen((o) => !o)}
-        className="flex items-center gap-2 text-muted hover:text-ink"
-      >
-        <ChevronDown className={cn("h-4 w-4 transition-transform", open && "rotate-180")} />
-        <span className="font-display text-xl font-semibold">{title}</span>
-      </button>
-      {open && <div className="mt-3">{children}</div>}
-    </section>
-  );
-}

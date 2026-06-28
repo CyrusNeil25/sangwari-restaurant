@@ -10,6 +10,7 @@ export type OrderStatus =
   | "CANCELLED";
 
 export type PaymentStatus = "UNPAID" | "PAID";
+export type PaymentMethod = "upi" | "cod"; // cod = cash on delivery
 
 export interface Category {
   id: string;
@@ -80,6 +81,7 @@ export interface Order {
   total: number;
   status: OrderStatus;
   paymentStatus: PaymentStatus;
+  paymentMethod: PaymentMethod;
   notes?: string;
   createdAt: string;
 }
@@ -93,5 +95,6 @@ export interface CreateOrderInput {
   address?: string;
   tableNumber?: string;
   notes?: string;
+  paymentMethod?: PaymentMethod;
   items: { itemId: string; qty: number; note?: string }[];
 }
