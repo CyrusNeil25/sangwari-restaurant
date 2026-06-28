@@ -1,0 +1,140 @@
+@import "tailwindcss";
+
+/* Enable class-based dark mode (toggle by adding `.dark` on <html>). */
+@custom-variant dark (&:where(.dark, .dark *));
+
+/* ------------------------------------------------------------------
+   Sangwari design system — warm "folk-modern" identity.
+   Palette: cream paper, terracotta, Dhokra bronze, turmeric saffron.
+------------------------------------------------------------------ */
+@theme {
+  /* Surfaces & text */
+  --color-cream: #faf3e8;
+  --color-paper: #fffcf6;
+  --color-ink: #2a1f16;
+  --color-muted: #7a6a58;
+  --color-line: #ead9c2;
+
+  /* Brand */
+  --color-terracotta: #c0492b;
+  --color-terracotta-600: #a93c22;
+  --color-terracotta-50: #f8eae3;
+  --color-bronze: #9c6b30;
+  --color-saffron: #e8a33d;
+  --color-saffron-50: #fbf0da;
+
+  /* Functional */
+  --color-leaf: #2f7d32;
+  --color-chili: #b4271f;
+
+  /* Type */
+  --font-display: var(--font-fraunces), Georgia, serif;
+  --font-sans: var(--font-jakarta), ui-sans-serif, system-ui, sans-serif;
+
+  /* Soft, warm shadows */
+  --shadow-soft: 0 1px 2px rgba(42, 31, 22, 0.04),
+    0 12px 30px -18px rgba(42, 31, 22, 0.25);
+  --shadow-card: 0 1px 2px rgba(42, 31, 22, 0.05),
+    0 18px 40px -24px rgba(42, 31, 22, 0.35);
+  --shadow-pop: 0 24px 60px -20px rgba(42, 31, 22, 0.45);
+
+  /* Extra radii */
+  --radius-4xl: 2rem;
+}
+
+/* Dark theme overrides (kept minimal; toggled via .dark on <html>) */
+.dark {
+  --color-cream: #1a140e;
+  --color-paper: #241b13;
+  --color-ink: #f5ecdf;
+  --color-muted: #b3a290;
+  --color-line: #3a2c1f;
+  --color-terracotta-50: #2e1a12;
+  --color-saffron-50: #2c2210;
+}
+
+@layer base {
+  html {
+    scroll-behavior: smooth;
+  }
+  body {
+    background-color: var(--color-cream);
+    color: var(--color-ink);
+    font-family: var(--font-sans);
+    -webkit-font-smoothing: antialiased;
+    text-rendering: optimizeLegibility;
+  }
+  ::selection {
+    background-color: color-mix(in srgb, var(--color-saffron) 40%, transparent);
+    color: var(--color-ink);
+  }
+  /* Slim warm scrollbar */
+  * {
+    scrollbar-width: thin;
+    scrollbar-color: var(--color-line) transparent;
+  }
+  h1, h2, h3, h4 {
+    font-family: var(--font-display);
+    letter-spacing: -0.01em;
+  }
+}
+
+@layer components {
+  /* Buttons -------------------------------------------------------- */
+  .btn,
+  .btn-primary,
+  .btn-ghost {
+    @apply inline-flex items-center justify-center gap-2 rounded-full font-semibold
+      transition-all duration-200 select-none active:scale-[0.97]
+      disabled:pointer-events-none disabled:opacity-50;
+  }
+  .btn-primary {
+    @apply bg-terracotta px-5 py-3 text-white shadow-soft
+      hover:bg-terracotta-600 hover:shadow-card;
+  }
+  .btn-ghost {
+    @apply border border-line bg-paper px-5 py-3 text-ink hover:border-terracotta/40;
+  }
+  .btn-sm {
+    @apply px-3.5 py-2 text-sm;
+  }
+
+  /* Cards ---------------------------------------------------------- */
+  .card {
+    @apply rounded-3xl border border-line bg-paper shadow-soft;
+  }
+
+  /* Chips / pills -------------------------------------------------- */
+  .chip {
+    @apply inline-flex items-center gap-1.5 rounded-full border border-line
+      bg-paper px-3 py-1.5 text-sm font-medium text-muted transition-colors;
+  }
+  .chip-active {
+    @apply border-terracotta bg-terracotta text-white;
+  }
+
+  /* Veg / non-veg indicator (Indian style) ------------------------- */
+  .diet-mark {
+    @apply grid h-4 w-4 shrink-0 place-items-center rounded-[4px] border-2;
+  }
+  .diet-mark::after {
+    content: "";
+    @apply block h-1.5 w-1.5 rounded-full;
+  }
+  .diet-veg { @apply border-leaf; }
+  .diet-veg::after { background-color: var(--color-leaf); }
+  .diet-nonveg { @apply border-chili; }
+  .diet-nonveg::after { background-color: var(--color-chili); }
+
+  /* Layout --------------------------------------------------------- */
+  .container-app {
+    @apply mx-auto w-full max-w-6xl px-4 sm:px-6;
+  }
+}
+
+/* Hide scrollbar utility for horizontal rails */
+@utility no-scrollbar {
+  &::-webkit-scrollbar { display: none; }
+  -ms-overflow-style: none;
+  scrollbar-width: none;
+}
