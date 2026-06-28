@@ -88,10 +88,10 @@ export function AdminLoginForm({ nextParam }: { nextParam: Promise<string | unde
         Sign in
       </button>
 
-      <p className="text-center text-xs text-muted">
+      {/* <p className="text-center text-xs text-muted">
         First time? Create your admin account in the Supabase dashboard under{" "}
         <span className="font-medium">Authentication → Users → Invite user</span>.
-      </p>
+      </p> */}
     </form>
   );
 }
